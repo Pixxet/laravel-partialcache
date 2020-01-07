@@ -1,6 +1,7 @@
 <?php
 
 namespace Pixxet\PartialCache;
+
 use Illuminate\Support\Facades\Facade;
 
 class PartialCacheFacade extends Facade

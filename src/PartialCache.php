@@ -5,9 +5,9 @@ namespace Pixxet\PartialCache;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
 
-class PartialCache {
-
-    static $baseCacheKey = null;
+class PartialCache
+{
+    public static $baseCacheKey = null;
 
     /**
      * Forget a rendered view.
@@ -63,12 +63,12 @@ class PartialCache {
     }
 
     /**
-     * @param string $view
+     * @param string      $view
      * @param string|null $varyBy
      *
      * @return string
      */
-    protected static function getCacheKey($view, $varyBy=null): string
+    protected static function getCacheKey($view, $varyBy = null): string
     {
         $baseCacheKey = self::$baseCacheKey ?: self::initBaseCacheKey();
 
@@ -76,7 +76,7 @@ class PartialCache {
             return $view;
         }
 
-        return "'{}.'.{$view}.'-'.{$varyBy}";
+        return "'{$baseCacheKey}.'.{$view}.'-'.{$varyBy}";
     }
 
     /**
@@ -110,19 +110,19 @@ class PartialCache {
     protected static function prepareTTL($ttl): int
     {
         if ($ttl === false) {
-            $ttl = (int)config('partialcache.default_duration', 60);
+            $ttl = (int) config('partialcache.default_duration', 60);
         }
 
         return $ttl;
     }
 
     /**
-     * @param string $path
+     * @param string      $path
      * @param string|null $dataParams
      *
      * @return string
      */
-    protected static function wrapNewExpression($path, $dataParams=null)
+    protected static function wrapNewExpression($path, $dataParams = null)
     {
         if (!$dataParams) {
             return $path;

@@ -1,4 +1,5 @@
 <?php
+
 return [
     // Enable or disable partialcache alltogether
     'enabled' => true,
