@@ -1,0 +1,41 @@
+{
+  "name": "pixxet/laravel-partialcache",
+  "description": "Laravel Cache Partial Blade Directive",
+  "homepage": "https://github.com/pixxet/laravel-partialcache",
+  "license": "MIT",
+  "keywords": [
+    "cache",
+    "partial",
+    "view"
+  ],
+  "authors": [
+    {
+      "name": "Omar",
+      "email": "me@omarsharkeyeh.me"
+    }
+  ],
+  "require": {
+    "php": ">=7.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Pixxet\\PartialCache\\": "src"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0-dev"
+    },
+    "laravel": {
+      "providers": [
+        "Pixxet\\PartialCache\\PartialCacheServiceProvider"
+      ],
+      "aliases": {
+        "PartialCache": "Pixxet\\PartialCache\\PartialCacheFacade"
+      }
+    }
+  }
+}
