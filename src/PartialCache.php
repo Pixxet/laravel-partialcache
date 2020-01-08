@@ -4,6 +4,7 @@ namespace Pixxet\PartialCache;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\View;
 
 class PartialCache
 {
@@ -33,33 +34,17 @@ class PartialCache
         if (!config('partialcache.enabled')) {
             return self::notCachedRendering($expression);
         }
-        [$path, $dataParams, $varyBy, $ttl] = self::parseExpression($expression);
 
-        $cacheKey = self::getCacheKey($path, $varyBy);
-        $ttl = self::prepareTTL($ttl);
-        $expression = self::wrapNewExpression($path, $dataParams);
-
-        return "
-        <?php 
-            \$definedVariables = get_defined_vars();
-            echo Cache::remember({$cacheKey}, {$ttl}, function() use (\$definedVariables) {
-                extract(\$definedVariables);
-                return \$definedVariables['__env']->make({$expression}, \Illuminate\Support\Arr::except(\$definedVariables, ['__data', '__path']))->render();
-            });
-        ?>\n";
+        return "\n<?php echo PartialCache::cache(\Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']), {$expression}); ?>\n";
     }
 
-    protected static function parseExpression($expression): array
-    {
-        $expression = Blade::stripParentheses($expression);
-        preg_match('/^([\'"][a-zA-Z.]+[\'"])\s*(?:,\s*(\[.*]))?\s*(?:,\s*(.*(?=,)|.*[^,]))?\s*(?:,\s*([\d]+))?$/', $expression, $matches);
-        if (!$matches) {
-            throw new \RuntimeException('Syntax error');
-        }
-        // no need for all matches
-        unset($matches[0]);
+    public static function cache(array $data, string $view, array $mergeData = [], string $varyBy = null, int $ttl = null) {
+        $cacheKey = self::getCacheKey($view, $varyBy);
+        $ttl = self::prepareTTL($ttl);
 
-        return array_pad($matches, 4, false);
+        return Cache::remember($cacheKey, $ttl, function() use ($view, $data, $mergeData) {
+            return View::make($view, $data, $mergeData)->render();
+        });
     }
 
     /**
@@ -109,7 +94,7 @@ class PartialCache
      */
     protected static function prepareTTL($ttl): int
     {
-        if ($ttl === false) {
+        if (!$ttl && $ttl !== 0) {
             $ttl = (int) config('partialcache.default_duration', 60);
         }
 
@@ -117,17 +102,17 @@ class PartialCache
     }
 
     /**
-     * @param string      $path
+     * @param string      $view
      * @param string|null $dataParams
      *
      * @return string
      */
-    protected static function wrapNewExpression($path, $dataParams = null)
+    protected static function wrapNewExpression($view, $dataParams = null)
     {
         if (!$dataParams) {
-            return $path;
+            return $view;
         }
 
-        return "{$path}, {$dataParams}";
+        return "{$view}, {$dataParams}";
     }
 }

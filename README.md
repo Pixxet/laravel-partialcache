@@ -52,12 +52,12 @@ Note that this caches the rendered html, not the rendered php like blade's defau
 {{-- With extra view data --}}
 @cache('products.card', ['product' => $category->products->first()])
 
+{{-- With an added key (cache entry will be partialcache.user.profile.{$user->id}) --}}
+@cache('user.profile', null, $user->id)
+
 {{-- For a certain time --}}
 {{-- (cache will invalidate in 60 minutes in this example, set null to remember forever) --}}
-@cache('homepage.news', null, 60)
-
-{{-- With an added key (cache entry will be partialcache.user.profile.{$user->id}) --}}
-@cache('user.profile', null, null, $user->id)
+@cache('homepage.news', null, null, 60)
 ```
 
 ### Clearing The PartialCache

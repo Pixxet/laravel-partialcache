@@ -15,6 +15,7 @@ class PartialCacheServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../resources/config/partialcache.php', 'partialcache');
+        $this->app->alias(PartialCache::class, 'partialcache');
     }
 
     /**
