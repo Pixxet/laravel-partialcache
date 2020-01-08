@@ -2,7 +2,6 @@
 
 namespace Pixxet\PartialCache;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 
@@ -55,11 +54,11 @@ class PartialCache
     }
 
     /**
-     * @param array $data
-     * @param string $view
-     * @param array $mergeData
+     * @param array       $data
+     * @param string      $view
+     * @param array       $mergeData
      * @param string|null $varyBy
-     * @param int|null $ttl
+     * @param int|null    $ttl
      *
      * @return string
      */
@@ -69,11 +68,11 @@ class PartialCache
     }
 
     /**
-     * @param array $data
-     * @param string $view
-     * @param array $mergeData
+     * @param array       $data
+     * @param string      $view
+     * @param array       $mergeData
      * @param string|null $varyBy
-     * @param int|null $ttl
+     * @param int|null    $ttl
      *
      * @return string
      */
@@ -87,12 +86,12 @@ class PartialCache
     }
 
     /**
-     * @param array $data
-     * @param bool $condition
-     * @param string $view
-     * @param array $mergeData
+     * @param array       $data
+     * @param bool        $condition
+     * @param string      $view
+     * @param array       $mergeData
      * @param string|null $varyBy
-     * @param int|null $ttl
+     * @param int|null    $ttl
      *
      * @return string
      */
@@ -121,11 +120,11 @@ class PartialCache
     }
 
     /**
-     * @param array $data
-     * @param string $view
-     * @param array $mergeData
+     * @param array       $data
+     * @param string      $view
+     * @param array       $mergeData
      * @param string|null $varyBy
-     * @param int|null $ttl
+     * @param int|null    $ttl
      *
      * @return string
      */
@@ -134,7 +133,7 @@ class PartialCache
         $cacheKey = self::getCacheKey($view, $varyBy);
         $ttl = self::prepareTTL($ttl);
 
-        return Cache::remember($cacheKey, $ttl, function() use ($view, $data, $mergeData) {
+        return Cache::remember($cacheKey, $ttl, function () use ($view, $data, $mergeData) {
             return View::make($view, $data, $mergeData)->render();
         });
     }
