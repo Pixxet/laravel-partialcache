@@ -32,5 +32,7 @@ class PartialCacheServiceProvider extends ServiceProvider
         $directive = config('partialcache.directive', 'cache');
 
         Blade::directive($directive, [PartialCache::class, 'render']);
+        Blade::directive($directive . 'If', [PartialCache::class, 'renderIf']);
+        Blade::directive($directive . 'When', [PartialCache::class, 'renderWhen']);
     }
 }

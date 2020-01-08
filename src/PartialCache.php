@@ -31,14 +31,106 @@ class PartialCache
      */
     public static function render($expression): string
     {
+        return self::renderCache('cache', $expression);
+    }
+
+    /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    public static function renderIf($expression): string
+    {
+        return self::renderCache('cacheIf', $expression);
+    }
+
+    /**
+     * @param string $expression
+     *
+     * @return string
+     */
+    public static function renderWhen($expression): string
+    {
+        return self::renderCache('cacheWhen', $expression);
+    }
+
+    /**
+     * @param array $data
+     * @param string $view
+     * @param array $mergeData
+     * @param string|null $varyBy
+     * @param int|null $ttl
+     *
+     * @return string
+     */
+    public static function cache(array $data, string $view, array $mergeData = [], string $varyBy = null, int $ttl = null)
+    {
+        return self::cacheView($data, $view, $mergeData, $varyBy, $ttl);
+    }
+
+    /**
+     * @param array $data
+     * @param string $view
+     * @param array $mergeData
+     * @param string|null $varyBy
+     * @param int|null $ttl
+     *
+     * @return string
+     */
+    public static function cacheIf(array $data, string $view, array $mergeData = [], string $varyBy = null, int $ttl = null)
+    {
+        if (!View::exists($view)) {
+            return '';
+        }
+
+        return self::cacheView($data, $view, $mergeData, $varyBy, $ttl);
+    }
+
+    /**
+     * @param array $data
+     * @param bool $condition
+     * @param string $view
+     * @param array $mergeData
+     * @param string|null $varyBy
+     * @param int|null $ttl
+     *
+     * @return string
+     */
+    public static function cacheWhen(array $data, bool $condition, string $view, array $mergeData = [], string $varyBy = null, int $ttl = null)
+    {
+        if ($condition !== true) {
+            return '';
+        }
+
+        return self::cacheView($data, $view, $mergeData, $varyBy, $ttl);
+    }
+
+    /**
+     * @param string $directive
+     * @param string $expression
+     *
+     * @return string
+     */
+    protected static function renderCache($directive, $expression): string
+    {
         if (!config('partialcache.enabled')) {
             return self::notCachedRendering($expression);
         }
 
-        return "\n<?php echo PartialCache::cache(\Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']), {$expression}); ?>\n";
+        return "\n<?php echo PartialCache::{$directive}(\Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']), {$expression}); ?>\n";
     }
 
-    public static function cache(array $data, string $view, array $mergeData = [], string $varyBy = null, int $ttl = null) {
+    /**
+     * @param array $data
+     * @param string $view
+     * @param array $mergeData
+     * @param string|null $varyBy
+     * @param int|null $ttl
+     *
+     * @return string
+     */
+    protected static function cacheView(array $data, string $view, array $mergeData = [], string $varyBy = null, int $ttl = null)
+    {
         $cacheKey = self::getCacheKey($view, $varyBy);
         $ttl = self::prepareTTL($ttl);
 

@@ -58,11 +58,19 @@ Note that this caches the rendered html, not the rendered php like blade's defau
 {{-- For a certain time --}}
 {{-- (cache will invalidate in 60 minutes in this example, set null to remember forever) --}}
 @cache('homepage.news', null, null, 60)
+
+{{-- If template exists --}}
+{{-- Just like the usual includeIf directive add "If" to the cache (or your custom directive) to cache partial only if the template exists --}}
+@cacheIf('footer.section.partial')
+
+{{-- When boolean true --}}
+{{-- Just like the usual includeWhen directive add "When" to the cache (or your custom directive) to cache partial depending on a given boolean condition --}}
+@cacheWhen($isPrintable !== true, 'footer.section.partial')
 ```
 
 ### Clearing The PartialCache
 
-You can forget a partialcache entry with `PartialCache::forget($view, $key)`.
+You can forget a partial cache entry with `PartialCache::forget($view, $key)`.
 
 ```php
 PartialCache::forget('user.profile', $user->id);
