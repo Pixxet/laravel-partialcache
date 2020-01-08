@@ -52,7 +52,7 @@ class PartialCache
     protected static function parseExpression($expression): array
     {
         $expression = Blade::stripParentheses($expression);
-        preg_match('/^([\'"][a-zA-Z.]+[\'"])\s*(?:,\s*(\[.*]))\s*(?:,\s*(.*(?=,)|.*[^,]))?\s*(?:,\s*([\d]+))?$/', $expression, $matches);
+        preg_match('/^([\'"][a-zA-Z.]+[\'"])\s*(?:,\s*(\[.*]))?\s*(?:,\s*(.*(?=,)|.*[^,]))?\s*(?:,\s*([\d]+))?$/', $expression, $matches);
         if (!$matches) {
             throw new \RuntimeException('Syntax error');
         }
